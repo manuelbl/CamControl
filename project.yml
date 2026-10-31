@@ -30,7 +30,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: net.codecrete.CamControl
         PRODUCT_NAME: CamControl
-        MARKETING_VERSION: "1.0"
+        MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "1000"
         INFOPLIST_FILE: CamControl/Info.plist
         CODE_SIGN_ENTITLEMENTS: CamControl/CamControl.entitlements
