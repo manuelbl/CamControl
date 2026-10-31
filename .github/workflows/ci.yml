@@ -1,0 +1,41 @@
+# Compiles the app and runs the unit tests on Apple silicon.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# A new push to the same branch or PR cancels the run in progress.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      # CI has no signing certificate, so all builds are signed ad hoc.
+      - name: Run tests
+        run: |
+          xcodebuild test -project CamControl.xcodeproj -scheme CamControlTests \
+              -destination 'platform=macOS' \
+              CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= CODE_SIGN_STYLE=Manual
+
+      - name: Build app
+        run: |
+          xcodebuild -project CamControl.xcodeproj -scheme CamControl -configuration Release \
+              CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= CODE_SIGN_STYLE=Manual build
