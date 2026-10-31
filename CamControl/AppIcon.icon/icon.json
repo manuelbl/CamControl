@@ -1,0 +1,87 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "srgb:0.96471,0.96863,0.97647,1.00000",
+      "srgb:0.82745,0.84314,0.87059,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "6-highlight-optional.svg",
+          "name" : "6-highlight-optional"
+        }
+      ],
+      "name" : "Highlight",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    },
+    {
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "5-lens-pupil.svg",
+          "name" : "5-lens-pupil"
+        },
+        {
+          "glass" : true,
+          "image-name" : "4-lens-glass.svg",
+          "name" : "4-lens-glass"
+        },
+        {
+          "glass" : true,
+          "image-name" : "3-lens-body.svg",
+          "name" : "3-lens-body"
+        }
+      ],
+      "name" : "Lens",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    },
+    {
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "1-ring-amber.svg",
+          "name" : "1-ring-amber"
+        },
+        {
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "2-ring-blue.svg",
+          "name" : "2-ring-blue"
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Ring",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "macOS"
+    ]
+  }
+}
