@@ -27,6 +27,12 @@ Download the signed and notarized DMG from the
 [latest release](https://github.com/manuelbl/CamControl/releases/latest), open it and drag
 CamControl to the Applications folder.
 
+Or install it with [Homebrew](https://brew.sh):
+
+```bash
+brew install --cask manuelbl/tap/camcontrol
+```
+
 ## Limitations
 
 - Only USB cameras can be adjusted. Other cameras, such as the MacBook's

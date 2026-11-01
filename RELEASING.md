@@ -114,8 +114,25 @@ git tag "v$VERSION"
 git push origin "v$VERSION"
 ```
 
-## Publishing (optional)
+## 10. Publish
 
 ```bash
 gh release create "v$VERSION" "$OUT/CamControl-$VERSION.dmg" --title "CamControl $VERSION"
 ```
+
+## 11. Update the Homebrew cask
+
+The cask lives in [manuelbl/homebrew-tap](https://github.com/manuelbl/homebrew-tap) at
+`Casks/camcontrol.rb`. Set its `version` and `sha256` to the new release, then check and push:
+
+```bash
+SHA=$(shasum -a 256 "$OUT/CamControl-$VERSION.dmg" | cut -d ' ' -f 1)
+TAP=$(brew --repo manuelbl/tap)
+sed -i '' -e "s/^  version \".*\"/  version \"$VERSION\"/" \
+    -e "s/^  sha256 \".*\"/  sha256 \"$SHA\"/" "$TAP/Casks/camcontrol.rb"
+brew audit --cask --online manuelbl/tap/camcontrol
+git -C "$TAP" commit -am "camcontrol $VERSION"
+git -C "$TAP" push
+```
+
+`brew --repo` requires the tap to be installed once with `brew tap manuelbl/tap`.
