@@ -12,6 +12,8 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.openURL) private var openURL
     @State private var showingResetAlert = false
+    /// Bottom edge of the camera picker row in window coordinates; the empty state starts below it.
+    @State private var pickerRowBottom: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -19,6 +21,9 @@ struct ContentView: View {
             Form {
                 Section {
                     LabeledContent("Camera") { cameraPicker }
+                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: {
+                            pickerRowBottom = $0
+                        }
                 }
                 if model.showsControls {
                     ControlSectionsView(model: model)
@@ -26,7 +31,7 @@ struct ContentView: View {
             }
             .formStyle(.grouped)
             // The camera picker stays in its native Form card; the empty state floats centered in
-            // the region below it (non-interactive, so the picker underneath stays live).
+            // the region below it (non-interactive, so the picker stays live).
             .overlay { emptyStateView }
             Divider()
             footer
@@ -148,12 +153,22 @@ struct ContentView: View {
     @ViewBuilder
     private var emptyStateView: some View {
         if let empty = model.emptyState {
-            ContentUnavailableView {
-                Label { Text(empty.title) } icon: { Image(systemName: empty.systemImage) }
-            } description: {
-                Text(empty.description)
+            // A grouped Form has no reliable intrinsic height, so the picker row's measured
+            // bottom edge marks where the free region below the card begins.
+            GeometryReader { geo in
+                VStack(spacing: 0) {
+                    Color.clear
+                        .frame(height: max(0, pickerRowBottom - geo.frame(in: .global).minY))
+                    ContentUnavailableView {
+                        Label { Text(empty.title) } icon: { Image(systemName: empty.systemImage) }
+                    } description: {
+                        Text(empty.description)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .scrollIndicators(.never)
+                    .scrollDisabled(true)
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .allowsHitTesting(false)
         }
     }
