@@ -15,6 +15,7 @@ struct ValueMarshallingTests {
         #expect(VideoControlDataType.uInt16.encode(6500) == [0x64, 0x19])
         #expect(VideoControlDataType.sInt16.encode(-1) == [0xff, 0xff])
         #expect(VideoControlDataType.sInt16.encode(-64) == [0xc0, 0xff])
+        #expect(VideoControlDataType.uInt32.encode(2047) == [0xff, 0x07, 0x00, 0x00])
     }
 
     @Test func encodesTupleAsTwoLittleEndianWords() {
@@ -32,6 +33,8 @@ struct ValueMarshallingTests {
         #expect(VideoControlDataType.boolean.decode([0x01]) == 1)
         #expect(VideoControlDataType.uInt16.decode([0xff, 0xff]) == 65535)
         #expect(VideoControlDataType.uInt16.decode([0x64, 0x19]) == 6500)
+        #expect(VideoControlDataType.uInt32.decode([0xff, 0xff, 0xff, 0xff]) == 4_294_967_295)
+        #expect(VideoControlDataType.uInt32.decode([0xff, 0x07, 0x00, 0x00]) == 2047)
     }
 
     @Test func decodesSInt16WithSignExtension() {
@@ -52,6 +55,7 @@ struct ValueMarshallingTests {
         (.uInt16, 65535),
         (.sInt16, -32768),
         (.sInt16, 32767),
+        (.uInt32, 4_294_967_295),
         (.sInt32Tuple, Int64(bitPattern: 0x8000_0000_7fff_ffff)),
     ])
     func roundTrips(_ dataType: VideoControlDataType, _ value: Int64) {

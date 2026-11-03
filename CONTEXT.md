@@ -28,11 +28,15 @@ parsed from a Camera's *Session identity*. The vocabulary the UI and the USB cam
 Same physical port + model ⇒ same key across a replug; the service distinguishes connections by
 IOKit registry entry ID.
 
-**Control** — One adjustable camera parameter (e.g. Brightness, Zoom, White balance). Backed by a
+**Control** — One adjustable camera parameter (e.g. Brightness, Zoom, Exposure). Backed by a
 UVC Processing Unit (PU) or Camera Terminal (CT) control. Each Control has a native integer range
 (minimum, maximum, resolution, default) that varies per camera. A Control the camera doesn't
 support is **hidden**; only supported Controls render. ("Disabled but visible" survives solely for
-an intra-control dependency — the White balance temperature slider frozen while WB Auto is on.)
+an intra-control dependency — an *Auto pair*'s slider frozen while its Auto is on.)
+
+**Auto pair** — An Auto toggle plus the manual Control it governs, rendered as one row: Exposure
+(auto exposure + exposure time) and White balance (auto + temperature). While Auto is on, the camera
+owns the manual value: its slider is frozen and a reapply skips it.
 
 **Empty state** — A centered native empty-state view (`ContentUnavailableView`) shown in place of
 the control sections when the selected camera has nothing to adjust. Two variants share one title
@@ -44,7 +48,8 @@ the control sections when the selected camera has nothing to adjust. Two variant
 The canonical value; what a *Snapshot* stores and what reapply writes.
 
 **Display unit** — A human-friendly rendering of a native value, for read-out only: percentage
-(relative to min/max), Kelvin (white balance), or degrees (pan/tilt = native/3600). Never
+(relative to min/max), shutter speed (exposure time, "1/N s"), Kelvin (white balance), or degrees
+(pan/tilt = native/3600). Never
 round-trips back to hardware.
 
 **Profile** — The persisted per-camera record: a *Snapshot* plus the *Reapply-on-connect* flag.

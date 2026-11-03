@@ -1,7 +1,7 @@
 # CamControl
 
-A macOS menu bar utility that adjusts USB webcam settings (brightness, contrast, white balance,
-zoom, pan/tilt, …) with a live preview, and reapplies them automatically whenever the camera is
+A macOS menu bar utility that adjusts USB webcam settings (exposure, gain, brightness, contrast,
+white balance, zoom, pan/tilt, …) with a live preview, and reapplies them automatically whenever the camera is
 plugged in again.
 
 <img src="docs/screenshot.png" alt="CamControl main window" height="600">

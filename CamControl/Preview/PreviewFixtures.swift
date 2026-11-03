@@ -25,9 +25,12 @@ enum PreviewFixtures {
     // MARK: - Controls
 
     /// One supported control per catalog entry, with plausible native ranges/values so
-    /// every widget (sliders, toggle, segmented, white-balance pair) renders live.
+    /// every widget (sliders, toggle, segmented, auto pairs) renders live.
     static let supportedControls: [ControlUIState] = [
         // EXPOSURE & COLOR
+        control(.exposureAuto, min: 1, max: 8, value: 1),          // manual → exposure slider live
+        control(.exposureTime, min: 3, max: 2047, value: 167),     // 1/60 s
+        control(.gain, min: 0, max: 255, value: 64),
         control(.antiFlicker, min: 0, max: 3, value: 2),           // "60 Hz"
         control(.backlight, min: 0, max: 1, value: 0),             // off
         control(.whiteBalanceAuto, min: 0, max: 1, value: 0),      // manual → temp slider live

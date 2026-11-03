@@ -4,15 +4,15 @@
 //  Hosted inside a `.formStyle(.grouped)` Form (see ContentView), which supplies the native
 //  System Settings card/window colors, row dividers, insets and header alignment. Only the
 //  controls the camera *supports* are rendered; unsupported ones are omitted and a section
-//  with no rows is dropped entirely. The one surviving "disabled but visible" widget is the
-//  White-Balance temperature slider while WB Auto is on. Widget edits update the UI
+//  with no rows is dropped entirely. The one surviving "disabled but visible" widget is an
+//  auto pair's slider (exposure time, WB temperature) while its Auto is on. Widget edits update the UI
 //  optimistically and are written through to the camera by `AppModel.setValue`.
 //
 
 import SwiftUI
 
 private let labelWidth: CGFloat = 116
-private let readoutWidth: CGFloat = 52
+private let readoutWidth: CGFloat = 64   // fits "1/10000 s"
 
 // MARK: - Rows
 
@@ -27,7 +27,7 @@ private struct SliderControlRow: View {
                 .frame(width: labelWidth, alignment: .leading)
             Group {
                 if let bounds = s?.sliderBounds {
-                    Slider(value: sliderBinding, in: bounds)
+                    Slider(value: sliderBinding(model, id), in: bounds)
                 } else {
                     Slider(value: .constant(0), in: 0...1).disabled(true)
                 }
@@ -38,12 +38,6 @@ private struct SliderControlRow: View {
                 .monospacedDigit()
         }
         .disabled(!(s?.supported ?? false))
-    }
-
-    private var sliderBinding: Binding<Double> {
-        Binding(
-            get: { Double(model.state(id)?.value ?? 0) },
-            set: { model.setValue(snapped($0, to: model.state(id)?.range), for: id) })
     }
 }
 
@@ -100,36 +94,37 @@ private struct SegmentedControlRow: View {
     }
 }
 
-/// White balance: an optional Auto checkbox over the temperature slider. Rendered only
-/// when the temperature slider is supported (so `temp` is non-nil here); the Auto checkbox
-/// appears only when that control is *also* supported. Auto on → temperature disabled but
-/// still visible, showing its greyed current value — the sole survivor of "disabled but
-/// visible" under the hide-unsupported rule.
-private struct WhiteBalanceRow: View {
+/// An auto pair (Exposure, White Balance): an optional Auto checkbox over the manual
+/// slider. Rendered only when the manual control is supported; the Auto checkbox appears
+/// only when that control is *also* supported. Auto on → slider disabled but still
+/// visible, frozen at its last-read value — the sole survivor of "disabled but visible"
+/// under the hide-unsupported rule.
+private struct AutoPairRow: View {
     let model: AppModel
+    let pair: AutoPair
 
     var body: some View {
-        let auto = model.state(.whiteBalanceAuto)
-        let temp = model.state(.whiteBalanceTemp)
+        let auto = model.state(pair.autoID)
+        let manual = model.state(pair.manualID)
         let autoSupported = auto?.supported ?? false
-        let autoOn = autoSupported && (auto?.value ?? 0) != 0
+        let autoOn = autoSupported && (auto?.isToggledOn ?? false)
 
         HStack(spacing: 12) {
-            Text("White Balance").frame(width: labelWidth, alignment: .leading)
+            Text(pair.label).frame(width: labelWidth, alignment: .leading)
             if autoSupported {
                 Toggle("Auto", isOn: autoBinding)
                     .toggleStyle(.checkbox)
                     .fixedSize()
             }
             Group {
-                if let bounds = temp?.sliderBounds {
-                    Slider(value: tempBinding, in: bounds)
+                if let bounds = manual?.sliderBounds {
+                    Slider(value: sliderBinding(model, pair.manualID), in: bounds)
                 } else {
                     Slider(value: .constant(0), in: 0...1).disabled(true)
                 }
             }
             .disabled(autoOn)
-            Text(temp?.displayText ?? "—")
+            Text(manual?.displayText ?? "—")
                 .frame(width: readoutWidth, alignment: .trailing)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
@@ -138,16 +133,24 @@ private struct WhiteBalanceRow: View {
 
     private var autoBinding: Binding<Bool> {
         Binding(
-            get: { (model.state(.whiteBalanceAuto)?.value ?? 0) != 0 },
-            set: { model.setValue($0 ? 1 : 0, for: .whiteBalanceAuto) })
+            get: { model.state(pair.autoID)?.isToggledOn ?? false },
+            set: { on in
+                guard let r = model.state(pair.autoID)?.range else { return }
+                model.setValue(on ? r.maximum : r.minimum, for: pair.autoID)
+            })
     }
+}
 
-    private var tempBinding: Binding<Double> {
-        Binding(
-            get: { Double(model.state(.whiteBalanceTemp)?.value ?? 0) },
-            set: { model.setValue(snapped($0, to: model.state(.whiteBalanceTemp)?.range),
-                                  for: .whiteBalanceTemp) })
-    }
+/// Binds a slider to a control: positions map to native values via `ControlUIState`
+/// (linear, or logarithmic for exposure time), snapped to the control's resolution.
+@MainActor
+private func sliderBinding(_ model: AppModel, _ id: ControlID) -> Binding<Double> {
+    Binding(
+        get: { model.state(id)?.sliderPosition ?? 0 },
+        set: { position in
+            guard let s = model.state(id) else { return }
+            model.setValue(s.value(atSliderPosition: position), for: id)
+        })
 }
 
 // MARK: - Assembled sections
@@ -165,16 +168,13 @@ struct ControlSectionsView: View {
         section(.framing)
     }
 
-    /// A section for one group, or nothing when the group has no rendered rows. The
-    /// White-Balance row (Exposure & Color only) is appended in catalog position.
+    /// A section for one group, or nothing when the group has no rendered rows.
     @ViewBuilder
     private func section(_ group: ControlGroup) -> some View {
-        let ids = model.renderableSimpleControls(in: group)
-        let showsWB = group == .exposureColor && model.showsWhiteBalanceRow
-        if !ids.isEmpty || showsWB {
+        let rows = model.renderableRows(in: group)
+        if !rows.isEmpty {
             Section {
-                ForEach(ids, id: \.self) { row(for: $0) }
-                if showsWB { WhiteBalanceRow(model: model) }
+                ForEach(rows) { row($0) }
             } header: {
                 Text(group.title)
             }
@@ -182,12 +182,17 @@ struct ControlSectionsView: View {
     }
 
     @ViewBuilder
-    private func row(for id: ControlID) -> some View {
-        switch model.state(id)?.descriptor.kind {
-        case .slider:    SliderControlRow(model: model, id: id)
-        case .toggle:    ToggleControlRow(model: model, id: id)
-        case .segmented: SegmentedControlRow(model: model, id: id)
-        case .none:      EmptyView()
+    private func row(_ row: ControlRow) -> some View {
+        switch row {
+        case .autoPair(let pair):
+            AutoPairRow(model: model, pair: pair)
+        case .single(let id):
+            switch model.state(id)?.descriptor.kind {
+            case .slider:    SliderControlRow(model: model, id: id)
+            case .toggle:    ToggleControlRow(model: model, id: id)
+            case .segmented: SegmentedControlRow(model: model, id: id)
+            case .none:      EmptyView()
+            }
         }
     }
 }

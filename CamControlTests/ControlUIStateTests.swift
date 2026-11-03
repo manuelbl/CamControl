@@ -4,6 +4,7 @@
 //  and bounds, toggle state, anti-flicker segments and resolution snapping.
 //
 
+import Foundation
 import Testing
 
 /// A supported control with the given range and current value.
@@ -52,6 +53,18 @@ struct ControlUIStateTests {
         #expect(state(.pan, value: 5400, min: -36000, max: 36000).displayText == "2°")  // 1.5° rounds up
     }
 
+    @Test func shutterShowsFractionOfASecond() {
+        // Native unit is 100 µs: 167 → 16.7 ms ≈ 1/60 s.
+        #expect(state(.exposureTime, value: 167, min: 1, max: 20000).displayText == "1/60 s")
+        #expect(state(.exposureTime, value: 1, min: 1, max: 20000).displayText == "1/10000 s")
+        #expect(state(.exposureTime, value: 5000, min: 1, max: 20000).displayText == "1/2 s")
+    }
+
+    @Test func shutterShowsWholeSecondsFromOneSecond() {
+        #expect(state(.exposureTime, value: 10000, min: 1, max: 20000).displayText == "1 s")
+        #expect(state(.exposureTime, value: 20000, min: 1, max: 20000).displayText == "2 s")
+    }
+
     @Test func selfDescribingControlsHaveNoText() {
         #expect(state(.backlight, value: 1, min: 0, max: 1).displayText == "")
     }
@@ -64,6 +77,49 @@ struct ControlUIStateTests {
 
     @Test func sliderBoundsSpanTheRange() {
         #expect(state(.brightness, value: 0, min: -64, max: 64).sliderBounds == -64...64)
+    }
+
+    @Test func linearSliderPositionIsTheNativeValue() {
+        let s = state(.brightness, value: 8, min: -64, max: 64)
+        #expect(s.sliderPosition == 8)
+        #expect(s.value(atSliderPosition: 7.6) == 8)
+    }
+
+    @Test func exposureSliderIsLogarithmic() throws {
+        // 1…10000: 100 sits halfway on a log scale.
+        let s = state(.exposureTime, value: 100, min: 1, max: 10000)
+        let bounds = try #require(s.sliderBounds)
+        #expect(abs(s.sliderPosition - (bounds.lowerBound + bounds.upperBound) / 2) < 1e-9)
+    }
+
+    @Test func exposureSliderEndsMapToRangeEnds() throws {
+        let s = state(.exposureTime, value: 100, min: 3, max: 2047)
+        let bounds = try #require(s.sliderBounds)
+        #expect(s.value(atSliderPosition: bounds.lowerBound) == 3)
+        #expect(s.value(atSliderPosition: bounds.upperBound) == 2047)
+    }
+
+    @Test(arguments: [3, 4, 50, 167, 2046, 2047] as [Int64])
+    func exposureSliderRoundTrips(_ value: Int64) {
+        let s = state(.exposureTime, value: value, min: 3, max: 2047)
+        #expect(s.value(atSliderPosition: s.sliderPosition) == value)
+    }
+
+    @Test func exposureSliderSnapsAndClamps() throws {
+        // Resolution 10 anchored at 5: 5, 15, 25, …; positions beyond the ends clamp.
+        let s = state(.exposureTime, value: 105, min: 5, max: 1005, resolution: 10)
+        #expect(s.value(atSliderPosition: log(103)) == 105)
+        let bounds = try #require(s.sliderBounds)
+        #expect(s.value(atSliderPosition: bounds.upperBound + 1) == 1005)
+        #expect(s.value(atSliderPosition: bounds.lowerBound - 1) == 5)
+    }
+
+    @Test func exposureSliderHandlesRangeStartingAtZero() throws {
+        let s = state(.exposureTime, value: 0, min: 0, max: 1000)
+        let bounds = try #require(s.sliderBounds)
+        #expect(bounds.lowerBound.isFinite)
+        #expect(s.value(atSliderPosition: s.sliderPosition) == 0)
+        #expect(s.value(atSliderPosition: bounds.upperBound) == 1000)
     }
 
     @Test func degenerateOrUnsupportedRangeHasNoBounds() {
@@ -83,6 +139,32 @@ struct ControlUIStateTests {
 
     @Test func unsupportedToggleIsOff() {
         #expect(!unsupported(.whiteBalanceAuto).isToggledOn)
+    }
+
+    @Test func autoExposureToggleIsOnInAnyAutoMode() {
+        // Range min = manual (1); shutter priority (4) also counts as auto.
+        #expect(!state(.exposureAuto, value: 1, min: 1, max: 8).isToggledOn)
+        #expect(state(.exposureAuto, value: 8, min: 1, max: 8).isToggledOn)
+        #expect(state(.exposureAuto, value: 4, min: 1, max: 8).isToggledOn)
+    }
+
+    // MARK: - Auto-exposure range
+
+    @Test func autoExposurePrefersAperturePriority() {
+        #expect(ControlRange.autoExposure(modes: 0x09, default: 8)
+                == ControlRange(minimum: 1, maximum: 8, resolution: 1, default: 8))
+        #expect(ControlRange.autoExposure(modes: 0x0f, default: 2)?.maximum == 8)
+    }
+
+    @Test func autoExposureFallsBackToAutoMode() {
+        #expect(ControlRange.autoExposure(modes: 0x03, default: 2)
+                == ControlRange(minimum: 1, maximum: 2, resolution: 1, default: 2))
+    }
+
+    @Test func autoExposureNeedsManualAndAnAutoMode() {
+        #expect(ControlRange.autoExposure(modes: 0x08, default: 8) == nil)   // no manual
+        #expect(ControlRange.autoExposure(modes: 0x01, default: 1) == nil)   // manual only
+        #expect(ControlRange.autoExposure(modes: 0x05, default: 1) == nil)   // shutter priority only
     }
 
     // MARK: - Anti-flicker segments

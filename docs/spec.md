@@ -16,6 +16,8 @@ For the individual camera settings, text fields or fields to enter a number shou
 
 Typical camera settings include:
 
+- Exposure (automatic, or exposure time)
+- Gain (percentage between 0% and 100%)
 - Brightness (percentage between 0% and 100%)
 - Contrast (percentage between 0% and 100%)
 - Saturation (percentage between 0% and 100%)
@@ -48,27 +50,41 @@ The code for communicating with USB cameras lives in `CamControl/UVC` (pure Swif
   from the UVC `GET_MIN` / `GET_MAX` / `GET_RES` requests, and `GET_DEF` marks the reset point
   (boolean controls use a synthesized 0/1 range). The value written to hardware is always the exact native integer (no round-tripping
   through a normalized scale).
+- The exposure time slider is **logarithmic**: native ranges span several orders of magnitude
+  (e.g. 0.3–200 ms), and on a linear slider the useful short times would be squeezed together at
+  the left end. Slider positions map back to native values, snapped to `GET_RES`.
 - The **numeric read-out** shown next to each slider is the native value converted to a friendly
   unit for display only:
-  - Brightness, Contrast, Saturation, Sharpness, Zoom → **percentage** = (value − min)/(max − min)×100
+  - Gain, Brightness, Contrast, Saturation, Sharpness, Zoom → **percentage** = (value − min)/(max − min)×100
+  - Exposure time → **shutter speed**: native unit is 100 µs; "1/N s" below one second, whole
+    seconds from one second up
   - White balance temperature → **Kelvin** (the native value directly)
   - Pan, Tilt → **degrees** = value / 3600 (native arc-second units)
 - Read-outs appear **only on sliders**. Toggles and segmented controls are self-describing; no
   separate number.
 
 **Control → UI widget mapping**
-- Sliders (native range, with read-out): Brightness (PU), Contrast (PU), Saturation (PU),
+- Sliders (native range, with read-out): Gain (PU), Brightness (PU), Contrast (PU), Saturation (PU),
   Sharpness (PU), White balance temperature (PU), Zoom (CT `ZoomAbsolute`), Pan + Tilt
   (both halves of CT `PanTiltAbsolute`).
 - Toggle: Backlight compensation (PU) — **off = control minimum, on = control maximum** (robust to
   ranges wider than 0/1).
 - Segmented: Anti-flicker (PU `PowerLineFrequency`) — **0 = Off, 1 = 50 Hz, 2 = 60 Hz**; add an
   **Auto** segment only if the camera reports a max ≥ 3.
-- White balance: an **Auto toggle** (PU `WhiteBalanceTemperatureAuto`) plus the temperature slider.
-  Auto on → slider **disabled, frozen** at the last-read value (not polled). Auto off → slider
-  enabled, initialized from the current read-back. The WB row renders whenever the temperature
-  control exists: both controls → Auto checkbox + slider; temperature only → bare slider. Auto
-  only or neither → the row is hidden (a lone Auto checkbox controls nothing observable).
+- **Auto pairs** — an Auto toggle plus the slider it governs, rendered as one row:
+  - Exposure: CT `AutoExposureMode` plus the exposure time slider (CT `ExposureTimeAbsolute`).
+    `AutoExposureMode`'s `GET_RES` is a bitmap of supported modes (1 = manual, 2 = auto,
+    4 = shutter priority, 8 = aperture priority), so its range is synthesized: off = manual (1),
+    on = aperture priority (8) if supported, else auto (2). Webcams have a fixed iris, so aperture
+    priority is full auto exposure. Without manual, or without either of those auto modes, the
+    toggle counts as unsupported. Any mode other than manual shows as on.
+  - White balance: PU `WhiteBalanceTemperatureAuto` plus the temperature slider.
+  - Auto on → slider **disabled, frozen** at the last-read value (not polled). Auto off → slider
+    enabled, initialized from the current read-back. The row renders whenever the manual control
+    exists: both controls → Auto checkbox + slider; manual only → bare slider. Auto only or
+    neither → the row is hidden (a lone Auto checkbox controls nothing observable).
+- Gain stays enabled while auto exposure is on: some cameras honour it then, and the settle
+  read-back shows what the camera actually kept.
 
 **Interaction model**
 - Slider/toggle changes apply to the camera hardware **immediately** — the live preview reflects
@@ -81,8 +97,8 @@ The code for communicating with USB cameras lives in `CamControl/UVC` (pure Swif
   (bottom) stay pinned; the camera picker and control sections between them form one grouped
   `Form` that scrolls when it doesn't fit. The empty-state view is centered over that region,
   below the picker.
-- **"Disabled but visible" survives only for an intra-control dependency:** the White balance
-  temperature slider is shown disabled/frozen while WB Auto is on.
+- **"Disabled but visible" survives only for an intra-control dependency:** an auto pair's slider
+  (exposure time, white balance temperature) is shown disabled/frozen while its Auto is on.
 - Slider drags are written at a manageable cadence: while a write is in flight, only the **latest
   pending value** per control is kept and written next; stale intermediates are dropped (the final
   resting value is always written). Preview tracks the thumb without a backlog.
@@ -98,8 +114,8 @@ The code for communicating with USB cameras lives in `CamControl/UVC` (pure Swif
 - A camera's **profile** = `{ control-values snapshot, reapplyOnConnect flag }`. A profile exists
   **exactly while Reapply-on-connect is on** for that camera.
 - The snapshot is a **full snapshot** of every currently-supported control's current value, not a
-  sparse delta of only user-touched controls. For White balance it holds both the Auto flag and
-  the temperature.
+  sparse delta of only user-touched controls. For an auto pair it holds both the Auto value and
+  the manual value.
 - Turning Reapply **on** creates the profile from the current values. Turning it **off** deletes
   the profile.
 - While Reapply is on, the snapshot is **autosaved** after every edit, once interaction settles
@@ -107,8 +123,8 @@ The code for communicating with USB cameras lives in `CamControl/UVC` (pure Swif
   An edit still waiting for its settle is saved with its in-memory values when the selection
   changes or the app quits.
 - "Reapply on connect" is a **per-camera** flag stored in that camera's profile — not a global
-  switch. On reapply, White balance is written in dependency order: Auto flag first, then (if Auto
-  is off) the temperature. Saved values are written as stored; controls the connected camera
+  switch. On reapply, each auto pair is written in dependency order: Auto first, then (if Auto
+  is off) the manual value. Saved values are written as stored; controls the connected camera
   doesn't support are skipped.
 - One JSON file (`profiles.json`, with a schema version) in
   `~/Library/Application Support/CamControl/`, keyed by `USBDevice.persistenceKey`

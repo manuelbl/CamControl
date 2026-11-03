@@ -20,12 +20,20 @@ struct ControlCatalogTests {
         #expect(ControlCatalog.descriptor(for: id).id == id)
     }
 
-    @Test func whiteBalanceAutoPrecedesTemperature() throws {
-        // The reapply relies on this order: the Auto flag must land before the temperature.
+    @Test(arguments: ControlCatalog.autoPairs.map(\.autoID))
+    func autoDirectlyPrecedesItsManualValue(_ autoID: ControlID) throws {
+        // The reapply and reset rely on this order: Auto must land before the manual value.
+        let pair = try #require(ControlCatalog.autoPair(containing: autoID))
         let ids = ControlCatalog.all.map(\.id)
-        let auto = try #require(ids.firstIndex(of: .whiteBalanceAuto))
-        let temp = try #require(ids.firstIndex(of: .whiteBalanceTemp))
-        #expect(auto < temp)
+        let auto = try #require(ids.firstIndex(of: pair.autoID))
+        let manual = try #require(ids.firstIndex(of: pair.manualID))
+        #expect(auto + 1 == manual)
+    }
+
+    @Test func autoPairsAreFoundByEitherMember() {
+        #expect(ControlCatalog.autoPair(containing: .exposureTime)?.autoID == .exposureAuto)
+        #expect(ControlCatalog.autoPair(containing: .whiteBalanceAuto)?.manualID == .whiteBalanceTemp)
+        #expect(ControlCatalog.autoPair(containing: .gain) == nil)
     }
 
     @Test func panAndTiltAreTheTwoAxesOfOneTuple() {
@@ -71,6 +79,19 @@ struct ControlCatalogTests {
         let snapshot: [ControlID: Int64] = [.whiteBalanceTemp: 4500, .whiteBalanceAuto: 0]
         let ids = ControlCatalog.orderedWrites(from: snapshot).map(\.0)
         #expect(ids == [.whiteBalanceAuto, .whiteBalanceTemp])
+    }
+
+    @Test func exposureTimeIsSkippedWhileAutoExposureIsOn() {
+        // Aperture priority (8) is "auto" on a webcam; gain is independent and still written.
+        let snapshot: [ControlID: Int64] = [.exposureAuto: 8, .exposureTime: 167, .gain: 64]
+        let ids = ControlCatalog.orderedWrites(from: snapshot).map(\.0)
+        #expect(ids == [.exposureAuto, .gain])
+    }
+
+    @Test func exposureTimeFollowsAutoExposureWhenManual() {
+        let snapshot: [ControlID: Int64] = [.gain: 64, .exposureTime: 167, .exposureAuto: 1]
+        let ids = ControlCatalog.orderedWrites(from: snapshot).map(\.0)
+        #expect(ids == [.exposureAuto, .exposureTime, .gain])
     }
 
     @Test func temperatureIsWrittenWhenAutoIsAbsent() {

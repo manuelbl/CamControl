@@ -26,6 +26,21 @@ struct EmptyState {
     let description: LocalizedStringResource
 }
 
+/// One rendered row of a control section.
+enum ControlRow: Identifiable {
+    /// A control with its own widget (slider, toggle or segmented).
+    case single(ControlID)
+    /// An Auto checkbox plus the slider it governs.
+    case autoPair(AutoPair)
+
+    var id: ControlID {
+        switch self {
+        case .single(let id): id
+        case .autoPair(let pair): pair.manualID
+        }
+    }
+}
+
 @MainActor
 @Observable
 final class AppModel {
@@ -96,26 +111,26 @@ final class AppModel {
 
     // MARK: - Derived: which rows render
 
-    /// Simple (non-White-Balance) *supported* controls in a group, in catalog display
-    /// order. Unsupported controls are omitted entirely — they no longer render disabled.
-    func renderableSimpleControls(in group: ControlGroup) -> [ControlID] {
+    /// The rows of a group, in catalog display order. Only supported controls render;
+    /// unsupported ones are omitted entirely. An auto pair renders as one row at its
+    /// manual entry's position, iff the *manual* control is supported (manual-only or
+    /// both); an Auto-only pair collapses to nothing — a lone Auto checkbox controls
+    /// nothing observable.
+    func renderableRows(in group: ControlGroup) -> [ControlRow] {
         ControlCatalog.all
-            .filter { $0.group == group }
-            .filter { $0.id != .whiteBalanceAuto && $0.id != .whiteBalanceTemp }
-            .filter { controls[$0.id]?.supported ?? false }
-            .map(\.id)
+            .filter { $0.group == group && (controls[$0.id]?.supported ?? false) }
+            .compactMap { descriptor -> ControlRow? in
+                guard let pair = ControlCatalog.autoPair(containing: descriptor.id) else {
+                    return .single(descriptor.id)
+                }
+                return descriptor.id == pair.manualID ? .autoPair(pair) : nil
+            }
     }
-
-    /// The compound White-Balance row renders iff the *temperature* slider is supported
-    /// (temp-only or both). An Auto-only or fully-unsupported WB collapses to nothing —
-    /// a lone Auto checkbox controls nothing observable.
-    var showsWhiteBalanceRow: Bool { controls[.whiteBalanceTemp]?.supported ?? false }
 
     /// Total rendered rows across all sections — the trigger for the empty state.
     private var totalRenderableRows: Int {
         let groups: [ControlGroup] = [.exposureColor, .image, .framing]
-        let simple = groups.reduce(0) { $0 + renderableSimpleControls(in: $1).count }
-        return simple + (showsWhiteBalanceRow ? 1 : 0)
+        return groups.reduce(0) { $0 + renderableRows(in: $1).count }
     }
 
     /// True when at least one control row renders — drives showing the Form sections.
@@ -124,7 +139,7 @@ final class AppModel {
     // MARK: - Derived: persistence
 
     /// The values a save persists: every currently-supported control's current value,
-    /// keyed by id. White Balance contributes both Auto (0/1) and Temp.
+    /// keyed by id. An auto pair contributes both its Auto and manual value.
     private func currentSnapshot() -> [ControlID: Int64] {
         var snapshot: [ControlID: Int64] = [:]
         for (id, state) in controls where state.supported { snapshot[id] = state.value }
@@ -370,7 +385,8 @@ final class AppModel {
         // A pending settle read-back would clobber the reset values — cancel it first.
         settleTask?.cancel(); settleTask = nil
         let cameraID = selectedCameraID
-        // Supported controls in catalog order (WB Auto before Temp) so WB resets in dependency order.
+        // Supported controls in catalog order (each Auto before its manual value), so auto
+        // pairs reset in dependency order.
         let ordered = ControlCatalog.all.map(\.id)
             .filter { controls[$0]?.supported ?? false }
         Task { [weak self] in

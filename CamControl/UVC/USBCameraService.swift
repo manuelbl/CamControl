@@ -237,15 +237,21 @@ actor USBCameraService {
     }
 
     private func snapshot(of d: ControlDescriptor, on uvc: UVCVideoDevice) -> ControlSnapshot {
-        guard isSupported(d.target, on: uvc) else {
-            return ControlSnapshot(id: d.id, state: ControlState(supported: false, value: 0), range: nil)
-        }
+        let unsupported = ControlSnapshot(id: d.id, state: ControlState(supported: false, value: 0),
+                                          range: nil)
+        guard isSupported(d.target, on: uvc) else { return unsupported }
         let value = readAspect(d.target, .value, on: uvc)
         let range: ControlRange
         if d.target.dataType == .boolean {
             // Booleans have no meaningful min/max/resolution; synthesize 0/1.
             range = ControlRange(minimum: 0, maximum: 1, resolution: 1,
                                  default: readAspect(d.target, .`default`, on: uvc))
+        } else if case .cameraTerminal(.autoExposureMode) = d.target.unit {
+            // GET_RES is a bitmap of the supported modes, not a step size.
+            guard let r = ControlRange.autoExposure(modes: readAspect(d.target, .resolution, on: uvc),
+                                                    default: readAspect(d.target, .`default`, on: uvc))
+            else { return unsupported }
+            range = r
         } else {
             range = ControlRange(minimum: readAspect(d.target, .minimum, on: uvc),
                                  maximum: readAspect(d.target, .maximum, on: uvc),
@@ -264,7 +270,7 @@ actor USBCameraService {
     }
 
     /// Writes a saved snapshot to a camera in the given order (the background reapply
-    /// path — sequencing such as "WB Auto before temperature" is the caller's job).
+    /// path — sequencing such as "Auto before its manual value" is the caller's job).
     /// Controls the camera no longer supports are skipped: profiles are keyed by
     /// vendor-product-serial, so an identical camera with a duplicate serial can share a
     /// profile with a slightly different control set.

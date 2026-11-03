@@ -135,12 +135,14 @@ enum VideoControlDataType: Int, Sendable {
     case boolean = 4
     /// Two packed little-endian SInt32 values (e.g. Pan/Tilt Absolute).
     case sInt32Tuple = 5
+    case uInt32 = 6
 
     /// Number of bytes transferred in the data stage.
     var byteCount: Int {
         switch self {
         case .uInt8, .boolean: 1
         case .uInt16, .sInt16: 2
+        case .uInt32: 4
         case .sInt32Tuple: 8
         }
     }
@@ -164,6 +166,8 @@ extension VideoControlDataType {
             Int64(UInt16(data[0]) | UInt16(data[1]) << 8)
         case .sInt16:
             Int64(Int16(bitPattern: UInt16(data[0]) | UInt16(data[1]) << 8))
+        case .uInt32:
+            data.withUnsafeBytes { Int64(UInt32(littleEndian: $0.loadUnaligned(as: UInt32.self))) }
         case .sInt32Tuple:
             data.withUnsafeBytes { Int64(littleEndian: $0.loadUnaligned(as: Int64.self)) }
         }

@@ -15,6 +15,17 @@
         }
       }
     },
+    "%lld s" : {
+      "comment" : "Exposure time in seconds",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld s"
+          }
+        }
+      }
+    },
     "%lldK" : {
       "comment" : "Color temperature in kelvin",
       "localizations" : {
@@ -22,6 +33,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lldK"
+          }
+        }
+      }
+    },
+    "1/%@ s" : {
+      "comment" : "Exposure time as a fraction of a second",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1/%@ s"
           }
         }
       }
@@ -186,6 +208,16 @@
         }
       }
     },
+    "Exposure" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belichtung"
+          }
+        }
+      }
+    },
     "Exposure & Color" : {
       "localizations" : {
         "de" : {
@@ -196,12 +228,42 @@
         }
       }
     },
+    "Exposure (Auto)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belichtung (automatisch)"
+          }
+        }
+      }
+    },
+    "Exposure Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belichtungszeit"
+          }
+        }
+      }
+    },
     "Framing" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ausschnitt"
+          }
+        }
+      }
+    },
+    "Gain" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verstärkung"
           }
         }
       }
