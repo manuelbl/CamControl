@@ -44,9 +44,9 @@ struct CamControlApp: App {
             ContentView()
                 .environment(model)
         }
-        // Let the user resize vertically; the real width lock + height floor live on the NSWindow
-        // (WindowAccessor). `.contentMinSize` keeps SwiftUI from forcing a content-driven size.
-        .windowResizability(.contentMinSize)
+        // Window size limits come from ContentView's frame bounds: fixed width, height
+        // user-resizable above a floor.
+        .windowResizability(.contentSize)
 
         // Always visible — the app's stable home, and the only handle on it while the main
         // window is closed and the app is a Dock-less accessory.

@@ -1,10 +1,10 @@
 //
 //  WindowChrome.swift
-//  Window sizing chrome for the main window. SwiftUI has no modifier that locks a window's
-//  width while leaving the height user-resizable, so we reach the backing `NSWindow` once and
-//  configure it at the AppKit level: width pinned to 560, height resizable within a floor, and
-//  a frame-autosave name so macOS remembers the size + position across launches. On first run
-//  (no autosaved frame yet) we open at a screen-clamped default height.
+//  Window sizing chrome for the main window. The size limits (fixed width, height floor) come
+//  from ContentView's frame bounds via `.windowResizability(.contentSize)`. This file reaches
+//  the backing `NSWindow` once for what SwiftUI doesn't cover: a frame-autosave name so macOS
+//  remembers the size + position across launches, and, on first run (no autosaved frame yet),
+//  a screen-clamped default height.
 //
 
 import SwiftUI
@@ -14,7 +14,7 @@ enum WindowMetrics {
     /// The one fixed dimension: the System Settings-style content width.
     static let width: CGFloat = 560
     /// Floor the user can shrink the window to (keeps preview + picker + footer usable).
-    static let minHeight: CGFloat = 540
+    static let minHeight: CGFloat = 580
     /// Preferred opening height, before the screen clamp.
     static let preferredHeight: CGFloat = 760
 
@@ -45,8 +45,8 @@ enum DockPresence {
     }
 }
 
-/// Configures the host `NSWindow` for the main window: locks the width, bounds the resizable
-/// height, and enables frame autosave. Rendered as a zero-size `.background` view so it can
+/// Configures the host `NSWindow` for the main window: enables frame autosave and applies the
+/// first-launch default height. Rendered as a zero-size `.background` view so it can
 /// grab `view.window` after the view joins the window.
 struct WindowAccessor: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView {
@@ -62,11 +62,6 @@ struct WindowAccessor: NSViewRepresentable {
     func updateNSView(_ nsView: NSView, context: Context) {}
 
     private static func configure(_ window: NSWindow) {
-        // Lock the width (min == max) while leaving height free between the floor and infinity.
-        let w = WindowMetrics.width
-        window.minSize = NSSize(width: w, height: WindowMetrics.minHeight)
-        window.maxSize = NSSize(width: w, height: .greatestFiniteMagnitude)
-
         // Whether AppKit has a remembered frame decides if we apply the first-launch default.
         let hasSavedFrame =
             UserDefaults.standard.object(forKey: "NSWindow Frame \(WindowMetrics.autosaveName)") != nil
@@ -74,20 +69,12 @@ struct WindowAccessor: NSViewRepresentable {
 
         if !hasSavedFrame {
             var frame = window.frame
-            frame.size.width = w
             // Preserve the top edge while changing height, so the window grows/shrinks downward.
             let top = frame.maxY
             frame.size.height = WindowMetrics.defaultHeight
             frame.origin.y = top - frame.size.height
             window.setFrame(frame, display: true)
             window.center()
-        } else {
-            // Restored frame may predate the width lock; snap the width back to 560.
-            if window.frame.width != w {
-                var frame = window.frame
-                frame.size.width = w
-                window.setFrame(frame, display: true)
-            }
         }
     }
 }

@@ -33,8 +33,8 @@ The app will only support USB camera. Other cameras such as the builtin camera o
 
 The app should be a utility app with a single window.
 
-The layout follows native macOS "System Settings" style: a 560px-wide single window with a 16:9
-live preview, a camera picker row, a scrollable region showing only the supported grouped control
+The layout follows native macOS "System Settings" style: a 560px-wide single window with a live
+preview (sized to the camera's aspect ratio, 16:9 when unknown, never cropped), a camera picker row, a scrollable region showing only the supported grouped control
 sections (EXPOSURE & COLOR / IMAGE / FRAMING) — or a centered native empty-state view when the
 camera exposes no controls — and a footer with a per-camera "Reapply on connect" toggle and Reset to
 Defaults.
@@ -190,7 +190,7 @@ The code for communicating with USB cameras lives in `CamControl/UVC` (pure Swif
 **Platform / scope**
 - Minimum deployment target: macOS 15 Sequoia.
 - Single window, System Settings style, with a **fixed width of 560pt**. The height is
-  user-resizable (minimum 540pt); the first launch opens at 760pt, clamped to the screen, and the
+  user-resizable (minimum 580pt); the first launch opens at 760pt, clamped to the screen, and the
   frame is remembered across launches. The window doesn't resize when switching cameras; the
   control region scrolls when it doesn't fit (preview + footer stay pinned).
 - App Sandbox with `com.apple.security.device.usb` and `com.apple.security.device.camera`

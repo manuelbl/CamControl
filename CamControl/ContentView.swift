@@ -1,8 +1,8 @@
 //
 //  ContentView.swift
 //
-//  The main window shell: 16:9 live preview, camera picker row, the
-//  grouped control sections, and the footer.
+//  The main window shell: live preview (sized to the camera's aspect ratio), camera
+//  picker row, the grouped control sections, and the footer.
 //
 
 import SwiftUI
@@ -36,9 +36,10 @@ struct ContentView: View {
             Divider()
             footer
         }
-        // Width is locked and the height bounded/persisted at the AppKit level; the accessor
-        // owns those constraints so nothing here fights the user's resize or the saved frame.
-        .frame(minWidth: WindowMetrics.width, minHeight: WindowMetrics.minHeight)
+        // With `.windowResizability(.contentSize)` these bounds become the window's size limits:
+        // fixed width, height resizable above the floor.
+        .frame(minWidth: WindowMetrics.width, maxWidth: WindowMetrics.width,
+               minHeight: WindowMetrics.minHeight, maxHeight: .infinity)
         .background(WindowAccessor())
         .task {
             await model.requestCameraAccessIfNeeded()
@@ -68,12 +69,28 @@ struct ContentView: View {
             RoundedRectangle(cornerRadius: 9).fill(Color(white: 0.05))
             previewContent
         }
-        // Explicit 16:9 height (532pt content width × 9/16) — the surrounding Form is now
-        // the fixed-size element, so the preview can no longer be the flexible one.
+        // Explicit height so the Form below stays the flexible element: the content width
+        // divided by the aspect ratio, capped so tall formats don't crowd out the controls.
         .frame(maxWidth: .infinity)
-        .frame(height: 299)
+        .frame(height: min(Self.previewWidth / previewAspectRatio, Self.previewMaxHeight))
         .clipShape(RoundedRectangle(cornerRadius: 9))
-        .padding([.top, .horizontal], 14)
+        .padding([.top, .horizontal], Self.previewPadding)
+    }
+
+    private static let previewPadding: CGFloat = 14
+    private static let previewWidth = WindowMetrics.width - 2 * previewPadding
+    /// Fits 16:9 (299pt) through 4:3 (399pt); taller formats are letterboxed.
+    private static let previewMaxHeight: CGFloat = 400
+
+    /// The camera's aspect ratio while the live preview shows; 16:9 for placeholders or
+    /// when the format is unknown.
+    private var previewAspectRatio: CGFloat {
+        if showsLivePreview, let ratio = model.preview.aspectRatio { return ratio }
+        return 16.0 / 9.0
+    }
+
+    private var showsLivePreview: Bool {
+        model.selectedCamera != nil && model.cameraAccess == .authorized
     }
 
     @ViewBuilder
@@ -94,7 +111,7 @@ struct ContentView: View {
             placeholder(icon: "lock.fill",
                         title: "Camera Access Restricted",
                         subtitle: "Camera access is restricted on this Mac")
-        } else if model.cameraAccess == .authorized {
+        } else if showsLivePreview {
             CameraPreview(session: model.preview.session)
         }
         // .notDetermined → black while the access prompt is in flight
