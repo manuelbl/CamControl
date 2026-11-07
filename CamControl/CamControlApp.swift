@@ -67,7 +67,7 @@ private struct MenuBarMenu: View {
     @Environment(\.openSettings) private var openSettings
 
     var body: some View {
-        Button("Open CamControl") {
+        Button("Show Main Window") {
             openWindow(id: "main")
             NSApp.activate()
         }

@@ -154,7 +154,7 @@ final class AppModel {
         guard let cam = selectedCamera else { return nil }          // no selection → blank
         if !cam.isControllable {
             return EmptyState(description:
-                "This camera’s settings can’t be adjusted by CamControl.")
+                "This camera’s settings can’t be adjusted by CamControl. Only cameras connected via USB can be controlled.")
         }
         guard !isLoadingControls else { return nil }                // discovering → blank
         return totalRenderableRows == 0

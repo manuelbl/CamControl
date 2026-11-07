@@ -2,15 +2,11 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
-    },
-    "%lld°" : {
-      "comment" : "Angle in degrees",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld°"
+            "value" : ""
           }
         }
       }
@@ -22,6 +18,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld s"
+          }
+        }
+      }
+    },
+    "%lld°" : {
+      "comment" : "Angle in degrees",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld°"
           }
         }
       }
@@ -218,22 +225,22 @@
         }
       }
     },
-    "Exposure & Color" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belichtung & Farbe"
-          }
-        }
-      }
-    },
     "Exposure (Auto)" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Belichtung (automatisch)"
+          }
+        }
+      }
+    },
+    "Exposure & Color" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belichtung & Farbe"
           }
         }
       }
@@ -334,16 +341,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aus"
-          }
-        }
-      }
-    },
-    "Open CamControl" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CamControl öffnen"
           }
         }
       }
@@ -458,6 +455,16 @@
         }
       }
     },
+    "Show Main Window" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptfenster anzeigen"
+          }
+        }
+      }
+    },
     "This camera doesn’t expose any settings that CamControl can adjust." : {
       "localizations" : {
         "de" : {
@@ -468,18 +475,12 @@
         }
       }
     },
-    "This camera’s settings can’t be adjusted by CamControl." : {
+    "This camera’s settings can’t be adjusted by CamControl. Only cameras connected via USB can be controlled." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Die Einstellungen dieser Kamera können von CamControl nicht verändert werden. Nur über USB angeschloßene Kameras sind steuerbar."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
             "state" : "translated",
-            "value" : "This camera’s settings can’t be adjusted by CamControl. Only cameras connected via USB can be controlled."
+            "value" : "Die Einstellungen dieser Kamera können von CamControl nicht verändert werden. Nur über USB angeschloßene Kameras sind steuerbar."
           }
         }
       }
