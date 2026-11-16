@@ -17,7 +17,7 @@ plugged in again.
 - **Runs in the menu bar**: closing the window keeps the app running in the background, without a
   Dock icon.
 - **Launch at login** (optional, in Settings) so saved settings are reapplied after a restart.
-- English and German.
+- English, German, Simplified Chinese, and Traditional Chinese. macOS uses your preferred app or system language.
 
 ## Download
 
