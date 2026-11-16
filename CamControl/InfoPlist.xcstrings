@@ -16,6 +16,12 @@
             "state" : "new",
             "value" : "CamControl"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CamControl"
+          }
         }
       }
     },
@@ -32,6 +38,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "CamControl"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "CamControl"
           }
         }
@@ -52,6 +64,12 @@
             "state" : "new",
             "value" : "CamControl shows a live preview of the selected camera so you can see your adjustments in real time."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CamControl 需要访问所选摄像头以显示实时预览，让你即时查看调整效果。"
+          }
         }
       }
     },
@@ -69,6 +87,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Copyright © 2026 Manuel Bleichenbacher"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版权所有 © 2026 Manuel Bleichenbacher"
           }
         }
       }

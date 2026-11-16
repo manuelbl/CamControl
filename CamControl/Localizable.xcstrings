@@ -8,6 +8,12 @@
             "state" : "translated",
             "value" : ""
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
         }
       }
     },
@@ -19,6 +25,12 @@
             "state" : "translated",
             "value" : "%lld s"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 秒"
+          }
         }
       }
     },
@@ -26,6 +38,12 @@
       "comment" : "Angle in degrees",
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld°"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld°"
@@ -41,6 +59,12 @@
             "state" : "translated",
             "value" : "%lldK"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld K"
+          }
         }
       }
     },
@@ -52,12 +76,24 @@
             "state" : "translated",
             "value" : "1/%@ s"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1/%@ 秒"
+          }
         }
       }
     },
     "50 Hz" : {
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50 Hz"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "50 Hz"
@@ -72,6 +108,12 @@
             "state" : "translated",
             "value" : "60 Hz"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "60 Hz"
+          }
         }
       }
     },
@@ -81,6 +123,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Über CamControl"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于 CamControl"
           }
         }
       }
@@ -92,6 +140,12 @@
             "state" : "translated",
             "value" : "Erlaube den Kamerazugriff in den Systemeinstellungen, um die Vorschau zu sehen"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在“系统设置”中允许访问摄像头，以查看预览"
+          }
         }
       }
     },
@@ -101,6 +155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Anti-Flicker"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "防闪烁"
           }
         }
       }
@@ -112,6 +172,12 @@
             "state" : "translated",
             "value" : "Automatisch"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动"
+          }
         }
       }
     },
@@ -121,6 +187,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gegenlichtkorrektur"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背光补偿"
           }
         }
       }
@@ -132,12 +204,24 @@
             "state" : "translated",
             "value" : "Helligkeit"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "亮度"
+          }
         }
       }
     },
     "CamControl" : {
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CamControl"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "CamControl"
@@ -152,6 +236,12 @@
             "state" : "translated",
             "value" : "Kamera"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头"
+          }
         }
       }
     },
@@ -161,6 +251,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Der Kamerazugriff ist auf diesem Mac eingeschränkt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Mac 限制了对摄像头的访问"
           }
         }
       }
@@ -172,6 +268,12 @@
             "state" : "translated",
             "value" : "Kamerazugriff wird benötigt"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要摄像头访问权限"
+          }
         }
       }
     },
@@ -181,6 +283,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kamerazugriff eingeschränkt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摄像头访问受限"
           }
         }
       }
@@ -192,6 +300,12 @@
             "state" : "translated",
             "value" : "Abbrechen"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
         }
       }
     },
@@ -201,6 +315,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stecke eine USB-Kamera ein, um zu starten"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请连接 USB 摄像头以开始使用"
           }
         }
       }
@@ -212,6 +332,12 @@
             "state" : "translated",
             "value" : "Kontrast"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对比度"
+          }
         }
       }
     },
@@ -221,6 +347,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Belichtung"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "曝光"
           }
         }
       }
@@ -232,6 +364,12 @@
             "state" : "translated",
             "value" : "Belichtung (automatisch)"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动曝光"
+          }
         }
       }
     },
@@ -241,6 +379,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Belichtung & Farbe"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "曝光与色彩"
           }
         }
       }
@@ -252,6 +396,12 @@
             "state" : "translated",
             "value" : "Belichtungszeit"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "曝光时间"
+          }
         }
       }
     },
@@ -261,6 +411,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ausschnitt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取景"
           }
         }
       }
@@ -272,6 +428,12 @@
             "state" : "translated",
             "value" : "Verstärkung"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增益"
+          }
         }
       }
     },
@@ -281,6 +443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bild"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图像"
           }
         }
       }
@@ -292,6 +460,12 @@
             "state" : "translated",
             "value" : "Beim Anmelden starten"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录时启动"
+          }
         }
       }
     },
@@ -301,6 +475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Muss in den Systemeinstellungen › Anmeldeobjekte genehmigt werden."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在“系统设置”›“登录项与扩展”中批准。"
           }
         }
       }
@@ -312,6 +492,12 @@
             "state" : "translated",
             "value" : "Einstellungen nicht steuerbar"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有可调节的设置"
+          }
         }
       }
     },
@@ -321,6 +507,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keine Kamera"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无摄像头"
           }
         }
       }
@@ -332,6 +524,12 @@
             "state" : "translated",
             "value" : "Keine Kamera verbunden"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未连接摄像头"
+          }
         }
       }
     },
@@ -341,6 +539,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aus"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
           }
         }
       }
@@ -352,6 +556,12 @@
             "state" : "translated",
             "value" : "Anmeldeobjekte öffnen"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开“登录项与扩展”"
+          }
         }
       }
     },
@@ -361,6 +571,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Datenschutz & Sicherheit öffnen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开“隐私与安全性”"
           }
         }
       }
@@ -372,6 +588,12 @@
             "state" : "translated",
             "value" : "Schwenken"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水平转动"
+          }
         }
       }
     },
@@ -381,6 +603,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CamControl beenden"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出 CamControl"
           }
         }
       }
@@ -392,6 +620,12 @@
             "state" : "translated",
             "value" : "Beim Anschließen anwenden"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接时恢复设置"
+          }
         }
       }
     },
@@ -401,6 +635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zurücksetzen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置"
           }
         }
       }
@@ -412,6 +652,12 @@
             "state" : "translated",
             "value" : "%@ auf Grundeinstellung zurücksetzen?"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要将 %@ 重置为默认设置吗？"
+          }
         }
       }
     },
@@ -421,6 +667,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zurücksetzen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复默认设置"
           }
         }
       }
@@ -432,6 +684,12 @@
             "state" : "translated",
             "value" : "Farbintensität"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "饱和度"
+          }
         }
       }
     },
@@ -441,6 +699,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Einstellungen…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置…"
           }
         }
       }
@@ -452,6 +716,12 @@
             "state" : "translated",
             "value" : "Schärfe"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "锐度"
+          }
         }
       }
     },
@@ -461,6 +731,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hauptfenster anzeigen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示主窗口"
           }
         }
       }
@@ -472,6 +748,12 @@
             "state" : "translated",
             "value" : "Diese Kamera bietet keine Einstellungen, die CamControl steuern kann."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CamControl 无法调节此摄像头的任何设置。"
+          }
         }
       }
     },
@@ -481,6 +763,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die Einstellungen dieser Kamera können von CamControl nicht verändert werden. Nur über USB angeschloßene Kameras sind steuerbar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CamControl 无法调节此摄像头的设置。仅支持调节通过 USB 连接的摄像头。"
           }
         }
       }
@@ -492,6 +780,12 @@
             "state" : "translated",
             "value" : "Dies setzt die Kamera auf ihre Grundeinstellungen zurück. Es kann nicht rückgängig gemacht werden."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这会将所有设置恢复为摄像头的出厂默认值。此操作无法撤销。"
+          }
         }
       }
     },
@@ -501,6 +795,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Neigen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "垂直转动"
           }
         }
       }
@@ -512,6 +812,12 @@
             "state" : "translated",
             "value" : "Damit gespeicherte Einstellungen automatisch auf verbundene Kameras angewendet werden, muss diese App laufen. Beim Anmelden starten, damit sie im Hintergrund läuft."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CamControl 必须保持运行，才能在摄像头连接时自动恢复已保存的设置。启用“登录时启动”后，CamControl 会在后台运行。"
+          }
         }
       }
     },
@@ -521,6 +827,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weißabgleich"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "白平衡"
           }
         }
       }
@@ -532,6 +844,12 @@
             "state" : "translated",
             "value" : "Weißabgleich (automatisch)"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动白平衡"
+          }
         }
       }
     },
@@ -542,6 +860,12 @@
             "state" : "translated",
             "value" : "Weißabgleichstemperatur"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "白平衡色温"
+          }
         }
       }
     },
@@ -551,6 +875,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoomen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩放"
           }
         }
       }
